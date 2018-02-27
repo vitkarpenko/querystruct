@@ -1,6 +1,9 @@
 import json
 
-from .utils import isnumber
+from .utils import (
+    isnumber,
+    quote_alphabetic
+)
 
 
 class Querystruct:
@@ -47,12 +50,12 @@ class Querystruct:
             parents = ['']
 
         if parents[-1] in self.comparison_operators:
-            value = query if isnumber(query) else f"'{query}'"
+            value = quote_alphabetic(query)
             return f"{parents[-2]} {self.comparison_operators[parents[-1]]} {value}"
 
         if not parents[-1].startswith('$'):
             if isinstance(query, str):
-                value = query if isnumber(query) else f"'{query}'"
+                value = quote_alphabetic(query)
                 return f"{parents[-1]} = {value}"
 
         if parents[-1].startswith('$or'):
