@@ -1,5 +1,7 @@
 import json
 
+from .utils import isnumber
+
 
 class Querystruct:
     """ Реализует валидацию и трансляцию в SQL mongo-like языка запросов.
@@ -36,8 +38,8 @@ class Querystruct:
         т.к. результат в целом не предназначен для чтения человеком.
 
         Примеры:
-        {'status':'A'} -> '(status = "A")'
-        {'age':{'$gt':'25','$lte':'50'}} -> '((age > 25) AND (age <= 50))'
+        {'status':'A'} -> "(status = 'A')"
+        {'age':{'$gt':'25','$lte':'50'}} -> "((age > 25) AND (age <= 50))"
         """
         if not query:
             query = self.query
@@ -45,11 +47,13 @@ class Querystruct:
             parents = ['']
 
         if parents[-1] in self.comparison_operators:
-            return f'{parents[-2]} {self.comparison_operators[parents[-1]]} {query}'
+            value = query if isnumber(query) else f"'{query}'"
+            return f"{parents[-2]} {self.comparison_operators[parents[-1]]} {value}"
 
         if not parents[-1].startswith('$'):
             if isinstance(query, str):
-                return f"{parents[-1]} = '{query}'"
+                value = query if isnumber(query) else f"'{query}'"
+                return f"{parents[-1]} = {value}"
 
         if parents[-1].startswith('$or'):
             return ' OR '.join(
@@ -57,7 +61,7 @@ class Querystruct:
                 for querypart in query
             )
 
-        if not parents[-1] or (len(query) > 1 and parents[-1] != '$or'):
+        if not parents[-1] or parents[-1] != '$or':
             return ' AND '.join(
                 '(' + self.to_sql(querypart, parents + [parent]) + ')'
                 for parent, querypart in query.items()
