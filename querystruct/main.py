@@ -30,6 +30,8 @@ class Querystruct:
     def to_sql(self, query=None, parents=None):
         """ По self.query рекурсивно генерирует WHERE часть соответствующего SQL SELECT запроса.
 
+        parents: список всех ключей выше по "дереву" запроса вплоть до текущего
+
         Примеры:
         {'status':'A'} --> '(status = "A")'
         {'age':{'$gt':'25','$lte':'50'}} --> ('((age > 25) AND (age <= 50))')
