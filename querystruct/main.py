@@ -61,8 +61,7 @@ class Querystruct:
                 for querypart in query
             )
 
-        if not parents[-1] or parents[-1] != '$or':
-            return ' AND '.join(
-                '(' + self.to_sql(querypart, parents + [parent]) + ')'
-                for parent, querypart in query.items()
-            )
+        return ' AND '.join(
+            '(' + self.to_sql(querypart, parents + [parent]) + ')'
+            for parent, querypart in query.items()
+        )
