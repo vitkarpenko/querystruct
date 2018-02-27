@@ -2,4 +2,4 @@
 """
 
 
-from main import Querystruct
+from .main import Querystruct

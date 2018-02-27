@@ -14,19 +14,34 @@ class Querystruct:
 
     def __init__(self, querystruct):
         """ querystruct: сериализованный json """
-        self.query = json.load(querystruct)
+        self.query = json.loads(querystruct)
         self.validate()
 
     def validate(self):
         pass
 
-    def to_sql(self):
-        """ По self.query генерирует WHERE часть соответствующего SQL SELECT запроса.
+    def to_sql(self, query=None, parent=None):
+        """ По self.query рекурсивно генерирует WHERE часть соответствующего SQL SELECT запроса.
+
+        parent: 
 
         Примеры:
-        {'status':'A'} --> 'status = "A"'
-        {'age':{'$gt':'25','$lte':'50'}} --> 'age > 25 AND age <= 50'
+        {'status':'A'} --> '(status = "A")'
+        {'age':{'$gt':'25','$lte':'50'}} --> ('age > 25 AND age <= 50')
         """
-        pass
+        if not query:
+            query = self.query
 
-
+        if parent == None:
+            return ' AND '.join(
+                '(' + self.to_sql(querypart, parent) + ')'
+                for parent, querypart in query.items()
+            )
+        elif parent.startswith('$or'):
+            return ' OR '.join(
+                '(' + self.to_sql(querypart, parent) + ')'
+                for parent, querypart in query.items()
+            )
+        elif not parent.startswith('$'):
+            if isinstance(query, str):
+                return f'{parent} = "{query}"'

@@ -1,0 +1,3 @@
+{
+  "tests/test_to_sql.py::test_to_sql[{\"status\":\"A\"}-status = \"A\"]": true
+}
