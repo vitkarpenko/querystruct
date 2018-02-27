@@ -24,8 +24,6 @@ class Querystruct:
     def __init__(self, querystruct):
         """ querystruct: сериализованный json """
         self.query = json.loads(querystruct)
-        print(querystruct)
-        print(self.query)
         self.validate()
 
     def validate(self):
