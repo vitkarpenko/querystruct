@@ -29,8 +29,8 @@ from querystruct import Querystruct
         "((beer = 'meh') OR (beer = 'gut'))"
     ),
     (
-        '{"$or": [{"beer": "meh"}, {"beer_price": {"$lt": "50"}}]}',
-        "((beer = 'meh') OR ((beer_price < 50)))"
+        '{"$or": [{"beer": "atollius"}, {"beer_price": {"$lt": "50", "$gte": "20"}}]}',
+        "((beer = 'atollius') OR ((beer_price < 50) AND (beer_price >= 20)))"
     ),
     (
         '{"bloodbourne": "meh", "diabloIII": "gut"}',
