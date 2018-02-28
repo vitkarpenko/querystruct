@@ -55,10 +55,10 @@ class Querystruct:
             return f"{parents[-2]} {self.comparison_operators[parents[-1]]} {format_sql_value(query)}"
 
         if parents[-1].startswith('$ne'):
-            if isinstance(query, (str, bool)):
-                return f"{parents[-2]} != {format_sql_value(query)}"
             if query is None:
                 return f"{parents[-2]} IS NOT {format_sql_value(query)}"
+            elif not isinstance(query, dict):
+                return f"{parents[-2]} != {format_sql_value(query)}"
 
         if parents[-1].startswith('$in'):
             return f"{parents[-2]} IN ({', '.join(format_sql_value(value) for value in query)})"
@@ -70,10 +70,10 @@ class Querystruct:
             )
 
         if not parents[-1].startswith('$'):
-            if isinstance(query, (str, bool)):
-                return f"{parents[-1]} = {format_sql_value(query)}"
             if query is None:
                 return f"{parents[-1]} IS {format_sql_value(query)}"
+            elif not isinstance(query, dict):
+                return f"{parents[-1]} = {format_sql_value(query)}"
 
         return ' AND '.join(
             '(' + self.to_sql(querypart, parents + [parent]) + ')'

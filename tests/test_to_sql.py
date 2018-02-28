@@ -13,6 +13,14 @@ from querystruct import Querystruct
         "(value = 100500)"
     ),
     (
+        '{"value": 100500}',
+        "(value = 100500)"
+    ),
+    (
+        '{"value": 100.5}',
+        "(value = 100.5)"
+    ),
+    (
         '{"value": null}',
         "(value IS NULL)"
     ),
