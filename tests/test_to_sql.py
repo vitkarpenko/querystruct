@@ -35,6 +35,14 @@ from querystruct import Querystruct
     (
         '{"bloodbourne": "meh", "diabloIII": "gut"}',
         "(bloodbourne = 'meh') AND (diabloIII = 'gut')"
+    ),
+    (
+        '{"$or": [{"language": {"$in": ["python", "haskell", "go"]}}, {"free_beer": true}]}',
+        "(((language IN ('python', 'haskell', 'go'))) OR (free_beer = True))"
+    ),
+    (
+        '{"language": {"$in": ["javascript", "perl"]}, "life": "pain"}',
+        "((language IN ('javascript', 'perl'))) AND (life = 'pain')"
     )
 ])
 def test_to_sql(query, expected):

@@ -53,8 +53,11 @@ class Querystruct:
             value = quote_alphabetic(query)
             return f"{parents[-2]} {self.comparison_operators[parents[-1]]} {value}"
 
+        if parents[-1].startswith('$in'):
+            return f"{parents[-2]} IN ({', '.join(quote_alphabetic(value) for value in query)})"
+
         if not parents[-1].startswith('$'):
-            if isinstance(query, str):
+            if isinstance(query, (str, bool)):
                 value = quote_alphabetic(query)
                 return f"{parents[-1]} = {value}"
 
