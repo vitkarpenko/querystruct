@@ -2,15 +2,26 @@
 """
 
 
-def isnumber(string):
-    """ Проверяет, является ли string строковым представлением числа. """
+def isnumber(value):
+    """ Проверяет, является ли value представлением числа. """
     try:
-        float(string)
+        float(value)
     except ValueError:
         return False
     return True
 
 
-def quote_alphabetic(string):
-    """ Оборачивает строку в одиночные кавычки, если она не является строковым представлением числа. """
-    return string if isnumber(string) else f"'{string}'"
+def format_sql_value(value):
+    """ Форматирует значение в соответствии со стандартом SQL:
+        - Оборачивает строку в одиночные кавычки, если она не является строковым представлением числа.
+        - None -> NULL
+        - True, False -> TRUE, FALSE
+    """
+    if value is None:
+        return 'NULL'
+    elif not isnumber(value):
+        return f"'{value}'"
+    elif isinstance(value, bool):
+        return str(value).upper()
+    else:
+        return value

@@ -2,7 +2,7 @@ import json
 
 from .utils import (
     isnumber,
-    quote_alphabetic
+    format_sql_value    
 )
 
 
@@ -20,8 +20,7 @@ class Querystruct:
         '$lt': '<',
         '$lte': '<=',
         '$gt': '>',
-        '$gte': '>=',
-        '$ne': '!='
+        '$gte': '>='
     }
 
     def __init__(self, querystruct):
@@ -44,28 +43,37 @@ class Querystruct:
         {'status':'A'} -> "(status = 'A')"
         {'age':{'$gt':'25','$lte':'50'}} -> "((age > 25) AND (age <= 50))"
         """
-        if not query:
+        # query может быть None в процессе выполнения метода
+        # -> для корня нужно проверять так же и parents
+        if not query and not parents:
             query = self.query
+        # пустая строка представляет корень
         if not parents:
             parents = ['']
 
         if parents[-1] in self.comparison_operators:
-            value = quote_alphabetic(query)
-            return f"{parents[-2]} {self.comparison_operators[parents[-1]]} {value}"
+            return f"{parents[-2]} {self.comparison_operators[parents[-1]]} {format_sql_value(query)}"
+
+        if parents[-1].startswith('$ne'):
+            if isinstance(query, (str, bool)):
+                return f"{parents[-2]} != {format_sql_value(query)}"
+            if query is None:
+                return f"{parents[-2]} IS NOT {format_sql_value(query)}"
 
         if parents[-1].startswith('$in'):
-            return f"{parents[-2]} IN ({', '.join(quote_alphabetic(value) for value in query)})"
-
-        if not parents[-1].startswith('$'):
-            if isinstance(query, (str, bool)):
-                value = quote_alphabetic(query)
-                return f"{parents[-1]} = {value}"
+            return f"{parents[-2]} IN ({', '.join(format_sql_value(value) for value in query)})"
 
         if parents[-1].startswith('$or'):
             return ' OR '.join(
                 self.to_sql(querypart)
                 for querypart in query
             )
+
+        if not parents[-1].startswith('$'):
+            if isinstance(query, (str, bool)):
+                return f"{parents[-1]} = {format_sql_value(query)}"
+            if query is None:
+                return f"{parents[-1]} IS {format_sql_value(query)}"
 
         return ' AND '.join(
             '(' + self.to_sql(querypart, parents + [parent]) + ')'

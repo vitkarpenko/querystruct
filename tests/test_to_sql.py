@@ -13,8 +13,16 @@ from querystruct import Querystruct
         "(value = 100500)"
     ),
     (
+        '{"value": null}',
+        "(value IS NULL)"
+    ),
+    (
         '{"rabbit": {"$ne": "mq"}}',
         "((rabbit != 'mq'))"
+    ),
+    (
+        '{"rabbit": {"$ne": null}}',
+        "((rabbit IS NOT NULL))"
     ),
     (
         '{"age": {"$gt": "25"}}',
@@ -38,7 +46,7 @@ from querystruct import Querystruct
     ),
     (
         '{"$or": [{"language": {"$in": ["python", "haskell", "go"]}}, {"free_beer": true}]}',
-        "(((language IN ('python', 'haskell', 'go'))) OR (free_beer = True))"
+        "(((language IN ('python', 'haskell', 'go'))) OR (free_beer = TRUE))"
     ),
     (
         '{"language": {"$in": ["javascript", "perl"]}, "life": "pain"}',
