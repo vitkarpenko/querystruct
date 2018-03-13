@@ -7,7 +7,7 @@ setup(
     author = 'Vitaly Karpenko',
     author_email = 'vitkarpenko@gmail.com',
     url = 'https://github.com/vitkarpenko/querystruct',
-    download_url = 'https://github.com/vitkarpenko/querystruct/archive/0.2.tar.gz',
+    download_url = 'https://github.com/vitkarpenko/querystruct/archive/0.3.tar.gz',
     keywords = ['pymongo', 'sql', 'translator'],
     classifiers = [],
 )
