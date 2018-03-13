@@ -1,1 +1,1 @@
-# Реализация поддержки языка запросов для сервисов мониторинга и реестра касс
+## Translator from pymongo query "language" to pure SQL
