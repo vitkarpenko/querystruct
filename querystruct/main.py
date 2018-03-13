@@ -23,9 +23,9 @@ class Querystruct:
         '$gte': '>='
     }
 
-    def __init__(self, querystruct):
-        """ querystruct: сериализованный json """
-        self.query = json.loads(querystruct)
+    def __init__(self, query):
+        """ query: словарь """
+        self.query = query
         self.validate()
 
     def validate(self):
